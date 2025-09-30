@@ -60,7 +60,6 @@ public sealed partial class AntagSelectionSystem : GameRuleSystem<AntagSelection
     [Dependency] private readonly EntityWhitelistSystem _whitelist = default!;
     [Dependency] private readonly ISharedAdminLogManager _adminLogger = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
-    [Dependency] private readonly IBanManager _banManager = default!;
     private ISharedSponsorsManager? _sponsorsManager; // Sunrise-Sponsors
 
     // arbitrary random number to give late joining some mild interest.

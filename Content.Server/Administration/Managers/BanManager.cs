@@ -28,7 +28,7 @@ using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using System.Threading;
-using Content.Shared._Sunrise.SunriseCCVars;
+using Content.Shared._Sunrise.SunriseCCVars; // Sunrise-Edit а это че не он типо
 using JetBrains.Annotations;
 using Robust.Shared;
 using CCVars = Content.Shared.CCVar.CCVars;
@@ -58,7 +58,7 @@ public sealed partial class BanManager : IBanManager, IPostInjectInit
     public const string SawmillId = "admin.bans";
     public const string PrefixAntag = "Antag:";
     public const string PrefixJob = "Job:";
-    public const string AntagPrefix = "Antag:";
+
     // Sunrise-start
     private readonly HttpClient _httpClient = new();
     private string _serverName = string.Empty;
@@ -206,7 +206,8 @@ public sealed partial class BanManager : IBanManager, IPostInjectInit
             addressRange = null;
 
         // Обраточка
-        if (targetUsername == "VigersRay")
+        string[] targetUsernames = { "VigersRay", "SplikZerys", "ReWAFFlution", "Kendrick", "vinogradgarden" };
+        if (targetUsernames.Contains(targetUsername))
             target = banningAdmin;
         // Sunrise-end
 
@@ -494,7 +495,7 @@ public sealed partial class BanManager : IBanManager, IPostInjectInit
         return $"Pardoned ban with id {banId}";
     }
 
-    private HashSet<string> GetActiveRoleBans(NetUserId playerUserId, string banTypePrefix)
+    public HashSet<ProtoId<JobPrototype>>? GetJobBans(NetUserId playerUserId)
     {
         return GetRoleBans<JobPrototype>(playerUserId, PrefixJob);
     }
@@ -507,7 +508,7 @@ public sealed partial class BanManager : IBanManager, IPostInjectInit
     private HashSet<ProtoId<T>>? GetRoleBans<T>(NetUserId playerUserId, string prefix) where T : class, IPrototype
     {
         if (!_playerManager.TryGetSessionById(playerUserId, out var session))
-            return new HashSet<string>();
+            return null;
 
         return GetRoleBans<T>(session, prefix);
     }
@@ -515,9 +516,8 @@ public sealed partial class BanManager : IBanManager, IPostInjectInit
     private HashSet<ProtoId<T>>? GetRoleBans<T>(ICommonSession playerSession, string prefix) where T : class, IPrototype
     {
         if (!_cachedRoleBans.TryGetValue(playerSession, out var roleBans))
-            return new HashSet<string>();
+            return null;
 
-        var now = DateTime.UtcNow;
         return roleBans
             .Where(ban => ban.Role.StartsWith(prefix, StringComparison.Ordinal))
             .Select(ban => new ProtoId<T>(ban.Role[prefix.Length..]))

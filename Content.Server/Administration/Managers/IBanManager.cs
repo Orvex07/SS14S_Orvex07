@@ -53,52 +53,6 @@ public interface IBanManager
     public HashSet<ProtoId<JobPrototype>> GetJobBans(NetUserId playerUserId);
 
     /// <summary>
-    /// Retrieves a set of antagonist bans for the specified player. By Default only active bans.
-    /// </summary>
-    /// <param name="playerUserId">The user ID of the player.</param>
-    /// <returns>
-    /// A set of antagonist prototype IDs representing the banned antagonist roles for the player,
-    /// or null if the player has no antagonist bans.
-    /// </returns>
-    public HashSet<ProtoId<AntagPrototype>> GetAntagBans(NetUserId playerUserId);
-
-    /// <summary>
-    /// Checks if the player is banned from a specific antagonist role.
-    /// Will also return true if they are banned on the All antagonists condition.
-    /// </summary>
-    /// <param name="userId">Player's user ID.</param>
-    /// <param name="antag">Antagonist role ID to check for ban.</param>
-    /// <returns>True if the player is banned from the specified antagonist role, false otherwise.</returns>
-    public bool IsAntagBanned(NetUserId userId, string antag);
-
-    /// <summary>
-    /// Checks if the player is banned from any of the specified antagonist roles.
-    /// Will also return true if they are banned on the All antagonists condition.
-    /// </summary>
-    /// <param name="userId">Player's user ID.</param>
-    /// <param name="antags">Antagonist role IDs to check for ban.</param>
-    /// <returns>True if the player is banned from any of the specified antagonist roles, false otherwise.</returns>
-    public bool IsAntagBanned(NetUserId userId, IEnumerable<string> antags);
-
-    /// <summary>
-    /// Checks if the player is banned from any of the specified antagonist roles.
-    /// Will also return true if they are banned on the All antagonists condition.
-    /// </summary>
-    /// <param name="userId">Player's user ID.</param>
-    /// <param name="antags">Antagonist role IDs to check for ban as ProtoId<AntagPrototype>.</param>
-    /// <returns>True if the player is banned from any of the specified antagonist roles, false otherwise.</returns>
-    public bool IsAntagBanned(NetUserId userId, IEnumerable<ProtoId<AntagPrototype>> antags);
-
-
-    /// <summary>
-    /// Checks if the player is banned from a specific role.
-    /// </summary>
-    /// <param name="userId">Player's user ID.</param>
-    /// <param name="roles">Role IDs to check for ban.</param>
-    /// <returns>True if the player is banned from any of the specified roles, false otherwise.</returns>
-    public bool IsRoleBanned(NetUserId userId, IEnumerable<string> roles);
-
-    /// <summary>
     /// Gets a list of prototype IDs with the player's antag bans.
     /// </summary>
     public HashSet<ProtoId<AntagPrototype>>? GetAntagBans(NetUserId playerUserId);
@@ -116,6 +70,7 @@ public interface IBanManager
     /// <param name="severity">Severity of the resulting ban note</param>
     /// <param name="reason">Reason for the ban</param>
     /// <param name="timeOfBan">Time when the ban was applied, used for grouping role bans</param>
+
     public void CreateRoleBan<T>(
         NetUserId? target,
         string? targetUsername,

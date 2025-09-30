@@ -54,7 +54,7 @@ public sealed class OverlayResourceCache<T> : IDisposable where T : class, IDisp
         return entry.Data;
     }
 
-    private void ViewportOnClearCachedResources(ClearCachedViewportResourcesEvent ev)
+    private void ViewportOnClearCachedResources(ClearCachedViewportResources ev)
     {
         if (!_cache.Remove(ev.ViewportId, out var entry))
         {
