@@ -26,7 +26,7 @@ public static class JobRequirements
     {
         var sys = entManager.System<SharedRoleSystem>();
         var requirements = sys.GetRoleRequirements(job);
-        return TryRequirementsMet(requirements, playTimes, out reason, entManager, protoManager, profile);
+        return TryRequirementsMet(requirements, playTimes, out reason, entManager, protoManager, profile, job.ID, sponsorPrototypes);
     }
 
     /// <summary>
@@ -42,7 +42,9 @@ public static class JobRequirements
         [NotNullWhen(false)] out FormattedMessage? reason,
         IEntityManager entManager,
         IPrototypeManager protoManager,
-        HumanoidCharacterProfile? profile)
+        HumanoidCharacterProfile? profile,
+        string? jobId, // Sunrise-Sponsors
+        string[] sponsorPrototypes) // Sunrise-Sponsors
     {
         reason = null;
         if (requirements == null)
@@ -50,8 +52,11 @@ public static class JobRequirements
 
         foreach (var requirement in requirements)
         {
-            if (!requirement.Check(entManager, protoManager, profile, playTimes, job.ID, sponsorPrototypes, out reason)) // Sunrise-Sponsors
+            if (!requirement.Check(entManager, protoManager, profile, playTimes, jobId, sponsorPrototypes, out reason)) // Sunrise-Sponsors
+            {
+                reason ??= FormattedMessage.FromMarkup("Требования не выполнены."); // Гарантируем reason != null
                 return false;
+            }
         }
 
         return true;

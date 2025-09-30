@@ -484,6 +484,8 @@ public sealed partial class HumanoidCharacterAppearance : ICharacterAppearance, 
         Color.Black
     };
 
+
+// ...existing code...
     public static HumanoidCharacterAppearance Random(string species, Sex sex)
     {
         var random = IoCManager.Resolve<IRobustRandom>();
@@ -497,7 +499,6 @@ public sealed partial class HumanoidCharacterAppearance : ICharacterAppearance, 
         var baseColor = new Color(random.NextFloat(1), random.NextFloat(1), random.NextFloat(1), 1);
 
         // create a new color palette based on BaseColor. roll to determine what type of palette it is.
-        // personally I think this should be weighted, but I can't be bothered to implement that.
         List<Color> colorPalette = [];
         switch (random.Next(3))
         {
@@ -512,36 +513,9 @@ public sealed partial class HumanoidCharacterAppearance : ICharacterAppearance, 
                 break;
         }
 
-        // grab the species skin coloration type.
-        var skinType = IoCManager.Resolve<IPrototypeManager>().Index<SpeciesPrototype>(species).SkinColoration;
-
-        // declare some defaults. ensures that the hair and eyes on hues-colored species don't match the skin or one another.
-        var newSkinColor = colorPalette[0];
-        var newHairColor = colorPalette[1];
-        var newEyeColor = colorPalette[2];
-
-        // now we do some color logic.
-        switch (skinType)
-        {
-            // if the species is HumanToned:
-            case HumanoidSkinColor.HumanToned:
-                // quantize the randomized skin color to the nearest acceptable HumanToned color.
-                var tone = Math.Round(Humanoid.SkinColor.HumanSkinToneFromColor(newSkinColor));
-                newSkinColor = Humanoid.SkinColor.HumanSkinTone((int)tone);
-
-                // pick a random realistic hair color from the list and randomize it juuuuust a little bit.
-                newHairColor = random.Pick(HairStyles.RealisticHairColors);
-                newHairColor = newHairColor
-                    .WithRed(RandomizeColor(newHairColor.R))
-                    .WithGreen(RandomizeColor(newHairColor.G))
-                    .WithBlue(RandomizeColor(newHairColor.B));
-
-                // and pick a random realistic eye color from the list.
-                newEyeColor = random.Pick(RealisticEyeColors);
-
         var protoMan = IoCManager.Resolve<IPrototypeManager>();
-        var skinType = protoMan.Index<SpeciesPrototype>(species).SkinColoration;
-        var strategy = protoMan.Index(skinType).Strategy;
+        var speciesPrototype = protoMan.Index<SpeciesPrototype>(species);
+        var strategy = protoMan.Index(speciesPrototype.SkinColoration).Strategy;
 
         var newSkinColor = strategy.InputType switch
         {
@@ -549,14 +523,25 @@ public sealed partial class HumanoidCharacterAppearance : ICharacterAppearance, 
             SkinColorationStrategyInput.Color => strategy.ClosestSkinColor(new Color(random.NextFloat(1), random.NextFloat(1), random.NextFloat(1), 1)),
         };
 
-        //Sunrise start
-        var speciesPrototype = IoCManager.Resolve<IPrototypeManager>().Index<SpeciesPrototype>(species);
+        var newHairColor = colorPalette[1];
+        var newEyeColor = colorPalette[2];
+
+        // Если хотите реалистичные цвета для HumanToned:
+        if (speciesPrototype.SkinColoration == "HumanToned")
+        {
+            newHairColor = random.Pick(HairStyles.RealisticHairColors);
+            newHairColor = newHairColor
+                .WithRed(RandomizeColor(newHairColor.R))
+                .WithGreen(RandomizeColor(newHairColor.G))
+                .WithBlue(RandomizeColor(newHairColor.B));
+
+            newEyeColor = random.Pick(RealisticEyeColors);
+        }
+
         var newWidth = random.NextFloat(speciesPrototype.MinWidth, speciesPrototype.MaxWidth);
         var newHeight = random.NextFloat(speciesPrototype.MinHeight, speciesPrototype.MaxHeight);
-        //Sunrise end
 
-        // at the end of all that, we should have new values for each of these, so we set the character appearance to these new values.
-        return new HumanoidCharacterAppearance(newHairStyle, newHairColor, newFacialHairStyle, newHairColor, newEyeColor, newSkinColor, newMarkings, newWidth, newHeight); // Sunrise edit
+        return new HumanoidCharacterAppearance(newHairStyle, newHairColor, newFacialHairStyle, newHairColor, newEyeColor, newSkinColor, newMarkings, newWidth, newHeight);
 
         // helper functions:
         float RandomizeColor(float channel)
@@ -583,19 +568,16 @@ public sealed partial class HumanoidCharacterAppearance : ICharacterAppearance, 
             return palette;
         }
 
-        // return a list of triadic complementary colors
         List<Color> GetTriadicComplementaries(Color color)
         {
             return GetComplementaryColors(color, 0.120);
         }
 
-        // return a list of split complementary colors
         List<Color> GetSplitComplementaries(Color color)
         {
             return GetComplementaryColors(color, 0.150);
         }
 
-        // return a list containing the base color and two copies of a single complemenary color
         List<Color> GetOneComplementary(Color color)
         {
             return GetComplementaryColors(color, 0.180);
@@ -606,18 +588,16 @@ public sealed partial class HumanoidCharacterAppearance : ICharacterAppearance, 
             var skinColorHSL = Color.ToHsl(skinColor);
             var toSquashHSL = Color.ToHsl(toSquash);
 
-            // check if the skin color is as dark as or darker than the marking color:
             if (toSquashHSL.Z <= skinColorHSL.Z)
             {
-                // if it is, don't fuck with it
                 return toSquash;
             }
 
-            // otherwise, create a new color with the H, S, and A of toSquash, but the L of skinColor
             var newColor = new Vector4(toSquashHSL.X, toSquashHSL.Y, skinColorHSL.Z, toSquashHSL.W);
             return Color.FromHsl(newColor);
         }
     }
+
 
     public static Color ClampColor(Color color)
     {
