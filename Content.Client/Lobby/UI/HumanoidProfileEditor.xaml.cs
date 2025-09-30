@@ -1241,13 +1241,13 @@ namespace Content.Client.Lobby.UI
                     break;
                 }
                 // Sunrise-start
-                case HumanoidSkinColor.None:
-                {
-                    Skin.Visible = false;
-                    RgbSkinColorContainer.Visible = false;
-                    _rgbSkinColorSelector.Color = Color.Transparent;
-                    break;
-                }
+                // case HumanoidSkinColor.None:
+                // {
+                //     Skin.Visible = false;
+                //     RgbSkinColorContainer.Visible = false;
+                //     _rgbSkinColorSelector.Color = Color.Transparent;
+                //     break;
+                // }
                 // Sunrise-end
             }
 
