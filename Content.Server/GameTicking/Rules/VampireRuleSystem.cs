@@ -5,7 +5,6 @@ using Content.Server.Mind;
 using Content.Server.Objectives;
 using Content.Server.Roles;
 using Content.Server.Vampire;
-using Content.Server.Bible.Components;
 using Content.Shared.Alert;
 using Content.Shared.Vampire.Components;
 using Content.Shared.NPC.Prototypes;
@@ -49,21 +48,15 @@ public sealed partial class VampireRuleSystem : GameRuleSystem<VampireRuleCompon
     {
         base.Initialize();
 
-        SubscribeLocalEvent<VampireRuleComponent, GetBriefingEvent>(OnGetBriefing);
         SubscribeLocalEvent<VampireRuleComponent, AfterAntagEntitySelectedEvent>(OnSelectAntag);
         SubscribeLocalEvent<VampireRuleComponent, ObjectivesTextPrependEvent>(OnTextPrepend);
     }
 
     private void OnSelectAntag(EntityUid mindId, VampireRuleComponent comp, ref AfterAntagEntitySelectedEvent args)
     {
-        var ent = args.EntityUid;
-
-        if (HasComp<BibleUserComponent>(ent))
-            return;
-
-        _antag.SendBriefing(ent, MakeBriefing(ent), Color.Yellow, BriefingSound);
-        MakeVampire(ent, comp);
+        MakeVampire(args.EntityUid, comp);
     }
+
     public bool MakeVampire(EntityUid target, VampireRuleComponent rule)
     {
         if (!_mind.TryGetMind(target, out var mindId, out var mind))
@@ -73,8 +66,8 @@ public sealed partial class VampireRuleSystem : GameRuleSystem<VampireRuleCompon
         if (TryComp<MetaDataComponent>(target, out var metaData))
         {
             var briefing = Loc.GetString("vampire-role-greeting", ("name", metaData?.EntityName ?? "Unknown"));
-            var briefingShort = Loc.GetString("vampire-role-greeting-short", ("name", metaData?.EntityName ?? "Unknown"));
 
+            _antag.SendBriefing(target, MakeBriefing(target), Color.Yellow, BriefingSound);
             _role.MindHasRole<VampireRoleComponent>(mindId, out var vampireRole);
             _role.MindHasRole<RoleBriefingComponent>(mindId, out var briefingComp);
             if (vampireRole is not null && briefingComp is null)
@@ -90,6 +83,7 @@ public sealed partial class VampireRuleSystem : GameRuleSystem<VampireRuleCompon
         // make sure it's initial chems are set to max
         var vampireComponent = EnsureComp<VampireComponent>(target);
         EnsureComp<VampireIconComponent>(target);
+        EnsureComp<VampireSpaceDamageComponent>(target);
         var vampireAlertComponent = EnsureComp<VampireAlertComponent>(target);
         var interfaceComponent = EnsureComp<UserInterfaceComponent>(target);
 
@@ -108,19 +102,31 @@ public sealed partial class VampireRuleSystem : GameRuleSystem<VampireRuleCompon
 
         _vampire.AddStartingAbilities(vampire);
         _vampire.MakeVulnerableToHoly(vampire);
-        _alerts.ShowAlert(vampire, vampireAlertComponent.BloodAlert);
-        _alerts.ShowAlert(vampire, vampireAlertComponent.StellarWeaknessAlert);
+        if (TryComp<AlertsComponent>(vampire, out var vampAlerts))
+        {
+            var vampAlertsEnt = (vampire, vampAlerts);
+            _alerts.ShowAlert(vampAlertsEnt, vampireAlertComponent.BloodAlert);
+            _alerts.ShowAlert(vampAlertsEnt, vampireAlertComponent.StellarWeaknessAlert);
+        }
+
+        Random random = new Random();
+
+        foreach (var objective in rule.BaseObjectives)
+            _mind.TryAddObjective(mindId, mind, objective);
+
+        if (rule.EscapeObjectives.Count > 0)
+        {
+            var randomEscapeObjective = rule.EscapeObjectives[random.Next(rule.EscapeObjectives.Count)];
+            _mind.TryAddObjective(mindId, mind, randomEscapeObjective);
+        }
+
+        if (rule.StealObjectives.Count > 0)
+        {
+            var randomEscapeObjective = rule.StealObjectives[random.Next(rule.StealObjectives.Count)];
+            _mind.TryAddObjective(mindId, mind, randomEscapeObjective);
+        }
 
         return true;
-    }
-
-    private void OnGetBriefing(Entity<VampireRuleComponent> role, ref GetBriefingEvent args)
-    {
-        var ent = args.Mind.Comp.OwnedEntity;
-
-        if (ent is null)
-            return;
-        args.Append(MakeBriefing(ent.Value));
     }
 
     private string MakeBriefing(EntityUid ent)

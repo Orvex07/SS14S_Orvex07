@@ -34,7 +34,6 @@ public sealed class VigersRaySystem : EntitySystem
     [Dependency] private readonly IChatManager _chatManager = default!;
     [Dependency] private readonly CreamPieSystem _creamPieSystem = default!;
     [Dependency] private readonly ParacusiaSystem _paracusiaSystem = default!;
-    [Dependency] private readonly NarcolepsySystem _narcolepsySystem = default!;
     [Dependency] private readonly StunSystem _stunSystem = default!;
     [Dependency] private readonly JitteringSystem _jittering = default!;
     [Dependency] private readonly StutteringSystem _stuttering = default!;
@@ -168,8 +167,6 @@ public sealed class VigersRaySystem : EntitySystem
             _paracusiaSystem.SetSounds(pSession.AttachedEntity.Value, new SoundCollectionSpecifier("Paracusia"), paracusia);
             _paracusiaSystem.SetTime(pSession.AttachedEntity.Value, 0.1f, 300, paracusia);
             _paracusiaSystem.SetDistance(pSession.AttachedEntity.Value, 7f, paracusia);
-            var narcolepsy = EnsureComp<NarcolepsyComponent>(pSession.AttachedEntity.Value);
-            _narcolepsySystem.SetTime(pSession.AttachedEntity.Value, new Vector2(300, 600), new Vector2(10, 30), narcolepsy);
             EnsureComp<FrontalLispComponent>(pSession.AttachedEntity.Value);
             EnsureComp<DisarmProneComponent>(pSession.AttachedEntity.Value);
             if (TryComp<CreamPiedComponent>(pSession.AttachedEntity.Value, out var creamPied))

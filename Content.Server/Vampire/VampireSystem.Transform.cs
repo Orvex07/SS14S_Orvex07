@@ -2,7 +2,6 @@ using Content.Server.Atmos.Components;
 using Content.Server.Body.Components;
 using Content.Server.Temperature.Components;
 using Content.Shared.Actions;
-using Content.Shared.Actions.Components;
 using Content.Shared.Atmos;
 using Content.Shared.Atmos.Rotting;
 using Content.Shared.Body.Components;
@@ -14,6 +13,7 @@ using Content.Shared.Vampire;
 using Content.Shared.Vampire.Components;
 using Content.Shared.Weapons.Melee;
 using Robust.Shared.Audio;
+using Content.Shared.Actions.Components;
 
 namespace Content.Server.Vampire;
 
@@ -54,8 +54,7 @@ public sealed partial class VampireSystem
     public void MakeVulnerableToHoly(Entity<VampireComponent> vampire)
     {
         //React to being beaten with the bible
-        // Слишком посос
-        //EnsureComp<UnholyComponent>(vampire);
+        EnsureComp<UnholyComponent>(vampire);
 
         //Take damage from holy water splash
         if (TryComp<ReactiveComponent>(vampire, out var reactive))
@@ -147,6 +146,6 @@ public sealed partial class VampireSystem
             reactive.ReactiveGroups.Remove("Unholy");
         }
 
-        //RemComp<UnholyComponent>(vampire);
+        RemComp<UnholyComponent>(vampire);
     }
 }

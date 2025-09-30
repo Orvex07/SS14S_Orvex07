@@ -633,10 +633,6 @@ public sealed partial class AntagSelectionSystem : GameRuleSystem<AntagSelection
         if (ent.Comp.AssignedSessions.Contains(session))
             return false;
 
-        // Check if any of the antagonist bans match the preferred roles in the AntagSelectionDefinition
-        if (_banManager.IsAntagBanned(session.UserId, def.PrefRoles))
-            return false;
-
         mind ??= session.GetMind();
 
         //todo: we need some way to check that we're not getting the same role twice. (double picking thieves or zombies through midrounds)

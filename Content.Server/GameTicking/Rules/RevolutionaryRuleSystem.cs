@@ -59,7 +59,6 @@ public sealed class RevolutionaryRuleSystem : GameRuleSystem<RevolutionaryRuleCo
     [Dependency] private readonly StationSystem _stationSystem = default!;
     [Dependency] private readonly AlertLevelSystem _alertLevel = default!; // Sunrise-Edit
     [Dependency] private readonly AdminVerbSystem _adminVerbSystem = default!;
-    [Dependency] private readonly IBanManager _banManager = default!;
 
     //Used in OnPostFlash, no reference to the rule component is available
     public readonly ProtoId<NpcFactionPrototype> RevolutionaryNpcFaction = "Revolutionary";
@@ -182,14 +181,6 @@ public sealed class RevolutionaryRuleSystem : GameRuleSystem<RevolutionaryRuleCo
             !_mobState.IsAlive(ev.Target) ||
             HasComp<ZombieComponent>(ev.Target))
         {
-            return;
-        }
-
-        // Check if the user has a ban on "Revolutionary"
-        // Check if the user has a ban on "Revolutionary"
-        if (mind != null && mind.UserId.HasValue && _banManager.IsAntagBanned(mind.UserId.Value, "Rev"))
-        {
-            KillDueToBan(ev.Target);
             return;
         }
 
@@ -346,15 +337,6 @@ public sealed class RevolutionaryRuleSystem : GameRuleSystem<RevolutionaryRuleCo
         }
 
         return gone == list.Count || list.Count == 0;
-    }
-
-    private void KillDueToBan(EntityUid target)
-    {
-        _popup.PopupEntity(Loc.GetString("rev-banned"), target, target, PopupType.LargeCaution);
-
-        var randomDelay = new Random().Next(10, 60); // 10-60 seconds
-        var targetTime = _timing.CurTime + TimeSpan.FromSeconds(randomDelay);
-        _scheduledSmites[target] = targetTime;
     }
 
     private static readonly string[] Outcomes =

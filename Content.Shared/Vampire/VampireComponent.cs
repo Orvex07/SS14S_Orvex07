@@ -17,8 +17,11 @@ namespace Content.Shared.Vampire.Components;
 [RegisterComponent, NetworkedComponent, AutoGenerateComponentState(true)]
 public sealed partial class VampireComponent : Component
 {
-    public static ProtoId<EmotePrototype> ScreamEmoteProto = "Scream";
-    public static ProtoId<CurrencyPrototype> CurrencyProto = "BloodEssence";
+    //Static prototype references
+    [ValidatePrototypeId<EmotePrototype>]
+    public static readonly string ScreamEmoteProto = "Scream";
+    [ValidatePrototypeId<CurrencyPrototype>]
+    public static readonly string CurrencyProto = "BloodEssence";
 
     [ViewVariables(VVAccess.ReadOnly), DataField("defaultMutation")]
     public VampireMutationsType DefaultMutation = VampireMutationsType.None;
@@ -52,10 +55,6 @@ public sealed partial class VampireComponent : Component
     {
         DamageDict = new Dictionary<string, FixedPoint2>() { { "Burn", 10 } }
     };
-    public static readonly DamageSpecifier SpaceDamage = new()
-    {
-        DamageDict = new Dictionary<string, FixedPoint2>() { { "Burn", 2.5 } }
-    };
 
     [ValidatePrototypeId<EntityPrototype>]
     public static readonly string MutationsActionPrototype = "ActionVampireOpenMutationsMenu";
@@ -63,14 +62,10 @@ public sealed partial class VampireComponent : Component
     [ViewVariables(VVAccess.ReadWrite)]
     public EntityUid? MutationsAction;
 
-    [ViewVariables(VVAccess.ReadWrite)]
-    public bool BloodScaleActive { get; set; }
-
     public readonly List<ProtoId<EntityPrototype>> BaseVampireActions = new()
     {
         "ActionVampireToggleFangs",
-        "ActionVampireHypnotise",
-        "ActionVampireBloodScale"
+        "ActionVampireHypnotise"
     };
 
     [ValidatePrototypeId<VampirePowerProtype>]
@@ -245,21 +240,6 @@ public sealed partial class VampireStrengthComponent : Component
 
     [ViewVariables(VVAccess.ReadWrite)]
     public float Upkeep = 0;
-}
-[RegisterComponent]
-public sealed partial class VampireBloodScaleComponent : Component
-{
-    [ViewVariables(VVAccess.ReadWrite)]
-    public float NextTick = 0;
-
-    [ViewVariables(VVAccess.ReadWrite)]
-    public bool BloodScaleActive { get; set; }
-
-    [ViewVariables(VVAccess.ReadWrite)]
-    public float Upkeep = 0;
-
-    [ViewVariables(VVAccess.ReadWrite)]
-    public bool IsActive { get; set; }
 }
 
 [Serializable, NetSerializable]

@@ -587,12 +587,10 @@ public sealed partial class BanManager : IBanManager, IPostInjectInit
             }
         }
 
-        var bans = new MsgRoleBans();
-
-        foreach (var ban in roleBans)
+        var bans = new MsgRoleBans()
         {
-            JobBans = jobBansList;
-            AntagBans = antagBansList;
+            JobBans = jobBansList,
+            AntagBans = antagBansList,
         };
 
         _sawmill.Debug($"Sent role bans to {pSession.Name}");
