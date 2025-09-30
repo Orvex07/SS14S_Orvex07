@@ -147,19 +147,7 @@ public sealed class BanPanelEui : BaseEui
                     now
                 );
             }
-            _banManager.WebhookUpdateRoleBans(
-                targetUid,
-                ban.Target,
-                Player.UserId,
-                addressRange,
-                targetHWid,
-                ban.BannedJobs ?? [],
-                ban.BannedAntags ?? [],
-                ban.BanDurationMinutes,
-                ban.Severity,
-                ban.Reason,
-                now
-            );
+
             Close();
 
             return;

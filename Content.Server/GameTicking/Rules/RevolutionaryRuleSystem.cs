@@ -106,20 +106,6 @@ public sealed class RevolutionaryRuleSystem : GameRuleSystem<RevolutionaryRuleCo
                 //  Sunrise-Edit-End
                 GameTicker.EndGameRule(uid, gameRule);
             }
-
-            // Execute scheduled smites for banned players
-            if (_scheduledSmites.Count > 0)
-            {
-                var currentTime = _timing.CurTime;
-                foreach (var entity in _scheduledSmites.Keys.ToList().Where(entity => _scheduledSmites[entity] <= currentTime))
-                {
-                    if (EntityManager.EntityExists(entity))
-                    {
-                        _adminVerbSystem.RandomDeath(entity);
-                    }
-                    _scheduledSmites.Remove(entity);
-                }
-            }
         }
     }
 

@@ -28,7 +28,7 @@ using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using System.Threading;
-using Content.Shared._Sunrise.SunriseCCVars; // Sunrise-Edit а это че не он типо
+using Content.Shared._Sunrise.SunriseCCVars; // Sunrise-Edit
 using JetBrains.Annotations;
 using Robust.Shared;
 using CCVars = Content.Shared.CCVar.CCVars;

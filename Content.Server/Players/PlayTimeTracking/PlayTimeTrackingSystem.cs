@@ -252,14 +252,7 @@ public sealed class PlayTimeTrackingSystem : EntitySystem
         }
 
         var requirements = _roles.GetRoleRequirements(job);
-        return JobRequirements.TryRequirementsMet(
-            requirements,
-            playTimes,
-            out _,
-            EntityManager,
-            _prototypes,
-            (HumanoidCharacterProfile?)
-            _preferencesManager.GetPreferences(player.UserId).SelectedCharacter);
+        return JobRequirements.TryRequirementsMet(requirements, playTimes, out _, EntityManager, _prototypes, (HumanoidCharacterProfile?) _preferencesManager.GetPreferences(player.UserId).SelectedCharacter);
     }
 
     /// <summary>
@@ -286,14 +279,7 @@ public sealed class PlayTimeTrackingSystem : EntitySystem
         // Sunrise-Sponsors-End
 
         var requirements = _roles.GetRoleRequirements(antag);
-        return JobRequirements.TryRequirementsMet(
-            requirements,
-            playTimes,
-            out _,
-            EntityManager,
-            _prototypes,
-            (HumanoidCharacterProfile?)
-            _preferencesManager.GetPreferences(player.UserId).SelectedCharacter, sponsorPrototypes); // Sunrise-Sponsors
+        return JobRequirements.TryRequirementsMet(requirements, playTimes, out _, EntityManager, _prototypes, (HumanoidCharacterProfile?) _preferencesManager.GetPreferences(player.UserId).SelectedCharacter, sponsorPrototypes); // Sunrise-Sponsors
     }
 
     public HashSet<ProtoId<JobPrototype>> GetDisallowedJobs(ICommonSession player)

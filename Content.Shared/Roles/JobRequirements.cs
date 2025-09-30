@@ -3,6 +3,7 @@ using Content.Shared.Preferences;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
 using Robust.Shared.Utility;
+using Robust.Shared.Localization;
 
 namespace Content.Shared.Roles;
 
@@ -54,7 +55,7 @@ public static class JobRequirements
         {
             if (!requirement.Check(entManager, protoManager, profile, playTimes, jobId, sponsorPrototypes, out reason)) // Sunrise-Sponsors
             {
-                reason ??= FormattedMessage.FromMarkup("Требования не выполнены."); // Гарантируем reason != null
+                reason ??= FormattedMessage.FromMarkup(Loc.GetString("job-requirements-default-failure")); // Гарантируем reason != null
                 return false;
             }
         }

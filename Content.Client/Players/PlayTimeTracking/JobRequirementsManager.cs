@@ -25,8 +25,8 @@ public sealed class JobRequirementsManager : ISharedPlaytimeManager
     [Dependency] private readonly IPrototypeManager _prototypes = default!;
 
     private readonly Dictionary<string, TimeSpan> _roles = new();
-    private readonly List<string> _jobBans = new();
-    private readonly List<string> _antagBans = new();
+    private readonly HashSet<string> _jobBans = new();
+    private readonly HashSet<string> _antagBans = new();
     private readonly List<string> _jobWhitelists = new();
 
     private ISawmill _sawmill = default!;
@@ -62,9 +62,9 @@ public sealed class JobRequirementsManager : ISharedPlaytimeManager
         _sawmill.Debug($"Received role ban info: {message.JobBans.Count} job ban entries and {message.AntagBans.Count} antag ban entries.");
 
         _jobBans.Clear();
-        _jobBans.AddRange(message.JobBans);
+        _jobBans.UnionWith(message.JobBans);
         _antagBans.Clear();
-        _antagBans.AddRange(message.AntagBans);
+        _antagBans.UnionWith(message.AntagBans);
         Updated?.Invoke();
     }
 
