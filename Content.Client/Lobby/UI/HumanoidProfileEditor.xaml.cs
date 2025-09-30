@@ -1039,11 +1039,7 @@ namespace Content.Client.Lobby.UI
                     icon.Texture = _sprite.Frame0(jobIcon.Icon);
                     selector.Setup(items, job.LocalizedName, 200, job.LocalizedDescription, icon, job.Guides);
 
-                    if (_requirements.IsRoleBanned(new[] { $"Job:{job.ID}" }, out var banReason, out var expirationTime))
-                    {
-                        selector.LockDueToBan(banReason, expirationTime);
-                    }
-                    else if (!_requirements.IsAllowed(job, (HumanoidCharacterProfile?)_preferencesManager.Preferences?.SelectedCharacter, out var reason, true))
+                    if (!_requirements.IsAllowed(job, (HumanoidCharacterProfile?)_preferencesManager.Preferences?.SelectedCharacter, out var reason))
                     {
                         selector.LockRequirements(reason);
                     }

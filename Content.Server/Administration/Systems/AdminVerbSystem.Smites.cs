@@ -1144,170 +1144,170 @@ public sealed partial class AdminVerbSystem
         if (TryComp<TimedDespawnComponent>(rod, out var despawn))
             despawn.Lifetime = offset.Length() / speed * 3; // exists thrice as long as it takes to get to you.
 
-        Verb terminate = new()
-        {
-            Text = "admin-smite-terminate-name",
-            Category = VerbCategory.Smite,
-            Icon = new SpriteSpecifier.Rsi(new ("Mobs/Species/Terminator/parts.rsi"), "skull_icon"),
-            Act = () =>
-            {
-                if (!TryComp<MindContainerComponent>(args.Target, out var mindContainer) || mindContainer.Mind == null)
-                    return;
+    //     Verb terminate = new()
+    //     {
+    //         Text = "admin-smite-terminate-name",
+    //         Category = VerbCategory.Smite,
+    //         Icon = new SpriteSpecifier.Rsi(new ("Mobs/Species/Terminator/parts.rsi"), "skull_icon"),
+    //         Act = () =>
+    //         {
+    //             if (!TryComp<MindContainerComponent>(args.Target, out var mindContainer) || mindContainer.Mind == null)
+    //                 return;
 
-                var coords = Transform(args.Target).Coordinates;
-                var mindId = mindContainer.Mind.Value;
-                _terminator.CreateSpawner(coords, mindId);
+    //             var coords = Transform(args.Target).Coordinates;
+    //             var mindId = mindContainer.Mind.Value;
+    //             _terminator.CreateSpawner(coords, mindId);
 
-                _popupSystem.PopupEntity(Loc.GetString("admin-smite-terminate-prompt"), args.Target,
-                    args.Target, PopupType.LargeCaution);
-            },
-            Impact = LogImpact.Extreme,
-            Message = Loc.GetString("admin-smite-terminate-description")
-        };
-        args.Verbs.Add(terminate);
+    //             _popupSystem.PopupEntity(Loc.GetString("admin-smite-terminate-prompt"), args.Target,
+    //                 args.Target, PopupType.LargeCaution);
+    //         },
+    //         Impact = LogImpact.Extreme,
+    //         Message = Loc.GetString("admin-smite-terminate-description")
+    //     };
+    //     args.Verbs.Add(terminate);
 
-        Verb randomDeath = new()
-        {
-            Text = "admin-smite-random-death-name",
-            Category = VerbCategory.Smite,
-            Icon = new SpriteSpecifier.Texture(new("/Textures/Interface/VerbIcons/die.svg.192dpi.png")),
-            Act = () =>
-            {
-                RandomDeath(args.Target);
-            },
-            Impact = LogImpact.Extreme,
-            Message = Loc.GetString("admin-smite-random-death-description")
-        };
-        args.Verbs.Add(randomDeath);
+    //     Verb randomDeath = new()
+    //     {
+    //         Text = "admin-smite-random-death-name",
+    //         Category = VerbCategory.Smite,
+    //         Icon = new SpriteSpecifier.Texture(new("/Textures/Interface/VerbIcons/die.svg.192dpi.png")),
+    //         Act = () =>
+    //         {
+    //             RandomDeath(args.Target);
+    //         },
+    //         Impact = LogImpact.Extreme,
+    //         Message = Loc.GetString("admin-smite-random-death-description")
+    //     };
+    //     args.Verbs.Add(randomDeath);
 
-    }
+    // }
 
-    public void RandomDeath(EntityUid target)
-    {
-        var badEvents = new List<Action<EntityUid>>
-        {
-            VomitToDeath,
-            BluespaceAway,
-            BleedOut,
-            Irradiate,
-            Scorched,
-            Shock,
-        };
+    // public void RandomDeath(EntityUid target)
+    // {
+    //     var badEvents = new List<Action<EntityUid>>
+    //     {
+    //         VomitToDeath,
+    //         BluespaceAway,
+    //         BleedOut,
+    //         Irradiate,
+    //         Scorched,
+    //         Shock,
+    //     };
 
-        var random = new Random();
-        var randomEvent = badEvents[random.Next(badEvents.Count)];
-        randomEvent(target);
-    }
+    //     var random = new Random();
+    //     var randomEvent = badEvents[random.Next(badEvents.Count)];
+    //     randomEvent(target);
+    // }
 
-    private FixedPoint2 GetDamageToKill(EntityUid target)
-    {
-        var random = new Random();
-        var multiplier = (float)(random.NextDouble() * 6.0 + 4.0); // Random float between 4.0 and 10.0
-        var damageToKill = _mobThresholdSystem.TryGetThresholdForState(target, MobState.Dead, out var deadThreshold)
-            ? deadThreshold.Value * multiplier
-            : FixedPoint2.New(100);
-        return FixedPoint2.New((int)Math.Round(damageToKill.Float(), MidpointRounding.AwayFromZero));
-    }
+    // private FixedPoint2 GetDamageToKill(EntityUid target)
+    // {
+    //     var random = new Random();
+    //     var multiplier = (float)(random.NextDouble() * 6.0 + 4.0); // Random float between 4.0 and 10.0
+    //     var damageToKill = _mobThresholdSystem.TryGetThresholdForState(target, MobState.Dead, out var deadThreshold)
+    //         ? deadThreshold.Value * multiplier
+    //         : FixedPoint2.New(100);
+    //     return FixedPoint2.New((int)Math.Round(damageToKill.Float(), MidpointRounding.AwayFromZero));
+    // }
 
-    private void Irradiate(EntityUid target)
-    {
-        _popupSystem.PopupEntity("3.6 roentgen, not great, not terrible...", target, target, PopupType.LargeCaution);
-        var damageSpecifier = new DamageSpecifier()
-        {
-            DamageDict = new Dictionary<string, FixedPoint2>
-            {
-                { "Radiation", GetDamageToKill(target) }
-            }
-        };
-        _damageable.SetDamage(target, Comp<DamageableComponent>(target), damageSpecifier);
-    }
+    // private void Irradiate(EntityUid target)
+    // {
+    //     _popupSystem.PopupEntity("3.6 roentgen, not great, not terrible...", target, target, PopupType.LargeCaution);
+    //     var damageSpecifier = new DamageSpecifier()
+    //     {
+    //         DamageDict = new Dictionary<string, FixedPoint2>
+    //         {
+    //             { "Radiation", GetDamageToKill(target) }
+    //         }
+    //     };
+    //     _damageable.SetDamage(target, Comp<DamageableComponent>(target), damageSpecifier);
+    // }
 
-    private void Scorched(EntityUid target)
-    {
-        if (TryComp<FlammableComponent>(target, out var flammable))
-        {
-            // Popup message to notify the target
-            _popupSystem.PopupEntity("You smell gas, Smoking kills...", target, target, PopupType.LargeCaution);
+    // private void Scorched(EntityUid target)
+    // {
+    //     if (TryComp<FlammableComponent>(target, out var flammable))
+    //     {
+    //         // Popup message to notify the target
+    //         _popupSystem.PopupEntity("You smell gas, Smoking kills...", target, target, PopupType.LargeCaution);
 
-            // Ignite the target
-            flammable.FireStacks = 3;
-            _flammableSystem.Ignite(target, target);
+    //         // Ignite the target
+    //         flammable.FireStacks = 3;
+    //         _flammableSystem.Ignite(target, target);
 
-            // Wait for a couple of seconds before applying the damage
-            Timer.Spawn(TimeSpan.FromSeconds(2), () =>
-            {
-                // Apply heat damage after the delay
-                var damageSpecifier = new DamageSpecifier()
-                {
-                    DamageDict = new Dictionary<string, FixedPoint2>
-                    {
-                        { "Heat", GetDamageToKill(target) - 50 }
-                    }
-                };
-                _damageable.SetDamage(target, Comp<DamageableComponent>(target), damageSpecifier);
-            });
-        }
-    }
+    //         // Wait for a couple of seconds before applying the damage
+    //         Timer.Spawn(TimeSpan.FromSeconds(2), () =>
+    //         {
+    //             // Apply heat damage after the delay
+    //             var damageSpecifier = new DamageSpecifier()
+    //             {
+    //                 DamageDict = new Dictionary<string, FixedPoint2>
+    //                 {
+    //                     { "Heat", GetDamageToKill(target) - 50 }
+    //                 }
+    //             };
+    //             _damageable.SetDamage(target, Comp<DamageableComponent>(target), damageSpecifier);
+    //         });
+    //     }
+    // }
 
-    private void Shock(EntityUid target)
-    {
-        _popupSystem.PopupEntity("You trip on a loose wire...", target, target, PopupType.LargeCaution);
-        var damageToKill = GetDamageToKill(target);
-        _electrocutionSystem.TryDoElectrocution(target,
-            null,
-            (int) damageToKill,
-            TimeSpan.FromSeconds(30),
-            refresh: true,
-            ignoreInsulation: true);
-    }
+    // private void Shock(EntityUid target)
+    // {
+    //     _popupSystem.PopupEntity("You trip on a loose wire...", target, target, PopupType.LargeCaution);
+    //     var damageToKill = GetDamageToKill(target);
+    //     _electrocutionSystem.TryDoElectrocution(target,
+    //         null,
+    //         (int) damageToKill,
+    //         TimeSpan.FromSeconds(30),
+    //         refresh: true,
+    //         ignoreInsulation: true);
+    // }
 
-    private void VomitToDeath(EntityUid target)
-    {
-        _popupSystem.PopupEntity("You start vomiting uncontrollably...", target, target, PopupType.LargeCaution);
-        _vomitSystem.Vomit(target, -1000, -1000);
-        var damageSpecifier = new DamageSpecifier()
-        {
-            DamageDict = new Dictionary<string, FixedPoint2>
-            {
-                { "Toxin", GetDamageToKill(target) }
-            }
-        };
-        _damageable.SetDamage(target, Comp<DamageableComponent>(target), damageSpecifier);
-    }
+    // private void VomitToDeath(EntityUid target)
+    // {
+    //     _popupSystem.PopupEntity("You start vomiting uncontrollably...", target, target, PopupType.LargeCaution);
+    //     _vomitSystem.Vomit(target, -1000, -1000);
+    //     var damageSpecifier = new DamageSpecifier()
+    //     {
+    //         DamageDict = new Dictionary<string, FixedPoint2>
+    //         {
+    //             { "Toxin", GetDamageToKill(target) }
+    //         }
+    //     };
+    //     _damageable.SetDamage(target, Comp<DamageableComponent>(target), damageSpecifier);
+    // }
 
-    private void BluespaceAway(EntityUid target)
-    {
-        // Notify the player about the teleportation
-        _popupSystem.PopupEntity("You feel a strange sensation as you are teleported away...", target, target, PopupType.LargeCaution);
+    // private void BluespaceAway(EntityUid target)
+    // {
+    //     // Notify the player about the teleportation
+    //     _popupSystem.PopupEntity("You feel a strange sensation as you are teleported away...", target, target, PopupType.LargeCaution);
 
-        // Get the current position of the target
-        var currentCoordinates = _transformSystem.GetMapCoordinates(target);
+    //     // Get the current position of the target
+    //     var currentCoordinates = _transformSystem.GetMapCoordinates(target);
 
-        // Spawn the bluespace effect at the current location
-        var bluespaceEffect = "EffectFlashBluespace"; // Replace with the actual prototype ID
-        Spawn(bluespaceEffect, currentCoordinates);
+    //     // Spawn the bluespace effect at the current location
+    //     var bluespaceEffect = "EffectFlashBluespace"; // Replace with the actual prototype ID
+    //     Spawn(bluespaceEffect, currentCoordinates);
 
-        // Trigger the explosion after teleportation
-        EntityManager.QueueDeleteEntity(target);
-    }
+    //     // Trigger the explosion after teleportation
+    //     EntityManager.QueueDeleteEntity(target);
+    // }
 
-    private void BleedOut(EntityUid target)
-    {
-        _popupSystem.PopupEntity("You start bleeding profusely...", target, target, PopupType.LargeCaution);
+    // private void BleedOut(EntityUid target)
+    // {
+    //     _popupSystem.PopupEntity("You start bleeding profusely...", target, target, PopupType.LargeCaution);
 
-        if (TryComp<BloodstreamComponent>(target, out var bloodstream))
-        {
-            _bloodstreamSystem.SpillAllSolutions((target, bloodstream));
-        }
+    //     if (TryComp<BloodstreamComponent>(target, out var bloodstream))
+    //     {
+    //         _bloodstreamSystem.SpillAllSolutions((target, bloodstream));
+    //     }
 
-        var damageSpecifier = new DamageSpecifier()
-        {
-            DamageDict = new Dictionary<string, FixedPoint2>
-            {
-                { "Slash", GetDamageToKill(target) }
-            }
-        };
+    //     var damageSpecifier = new DamageSpecifier()
+    //     {
+    //         DamageDict = new Dictionary<string, FixedPoint2>
+    //         {
+    //             { "Slash", GetDamageToKill(target) }
+    //         }
+    //     };
 
-        _damageable.SetDamage(target, Comp<DamageableComponent>(target), damageSpecifier);
+    //     _damageable.SetDamage(target, Comp<DamageableComponent>(target), damageSpecifier);
     }
 }
