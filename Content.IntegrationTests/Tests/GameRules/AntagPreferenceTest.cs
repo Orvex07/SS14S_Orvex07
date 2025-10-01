@@ -12,6 +12,8 @@ using Robust.Shared.GameObjects;
 using Robust.Shared.Network;
 using Robust.Shared.Player;
 using Robust.Shared.Random;
+using Content.Shared.Roles;
+using Robust.Shared.Prototypes;
 
 namespace Content.IntegrationTests.Tests.GameRules;
 
@@ -38,7 +40,12 @@ public sealed class AntagPreferenceTest
         // Mock the IBanManager to always return false for IsAntagBanned
         var mockBanManager = new Mock<IBanManager>();
         mockBanManager
-            .Setup(x => x.IsAntagBanned(It.IsAny<NetUserId>(), It.IsAny<IEnumerable<string>>()))
+            .Setup(x => x.GetAntagBans(It.IsAny<NetUserId>()))
+            .Returns(new HashSet<ProtoId<AntagPrototype>>());
+        mockBanManager
+            .Setup(x => x.IsRoleBanned(
+                It.IsAny<ICommonSession>(),
+                It.IsAny<List<ProtoId<AntagPrototype>>>()))
             .Returns(false);
 
         // Use reflection to set the private _banManager field

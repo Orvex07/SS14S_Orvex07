@@ -109,7 +109,7 @@ namespace Content.Client.UserInterface.Systems.Ghost.Controls.Roles
                 var prototypesAllowed = group.Key.Item3;
 
                 // Adding a new role
-                _window.AddEntry(name, description, prototypesAllowed, reason, group, spriteSystem);
+                _window.AddEntry(name, description, group.Key.PrototypeId, prototypesAllowed, reason, group, spriteSystem);
             }
 
             // Restore the Collapsible box state if it is saved

@@ -495,32 +495,31 @@ public sealed partial class BanManager : IBanManager, IPostInjectInit
         return $"Pardoned ban with id {banId}";
     }
 
-    public HashSet<ProtoId<JobPrototype>>? GetJobBans(NetUserId playerUserId)
+    public HashSet<ProtoId<JobPrototype>> GetJobBans(NetUserId playerUserId)
     {
         return GetRoleBans<JobPrototype>(playerUserId, PrefixJob);
     }
 
-    public HashSet<ProtoId<AntagPrototype>>? GetAntagBans(NetUserId playerUserId)
+    public HashSet<ProtoId<AntagPrototype>> GetAntagBans(NetUserId playerUserId)
     {
         return GetRoleBans<AntagPrototype>(playerUserId, PrefixAntag);
     }
 
-    private HashSet<ProtoId<T>>? GetRoleBans<T>(NetUserId playerUserId, string prefix) where T : class, IPrototype
+    private HashSet<ProtoId<T>> GetRoleBans<T>(NetUserId id, string prefix) where T : class, IPrototype
     {
-        if (!_playerManager.TryGetSessionById(playerUserId, out var session))
-            return null;
-
-        return GetRoleBans<T>(session, prefix);
+        if (!_playerManager.TryGetSessionById(id, out var s))
+            return new();
+        return GetRoleBans<T>(s, prefix);
     }
 
-    private HashSet<ProtoId<T>>? GetRoleBans<T>(ICommonSession playerSession, string prefix) where T : class, IPrototype
+    private HashSet<ProtoId<T>> GetRoleBans<T>(ICommonSession s, string prefix) where T : class, IPrototype
     {
-        if (!_cachedRoleBans.TryGetValue(playerSession, out var roleBans))
-            return null;
+        if (!_cachedRoleBans.TryGetValue(s, out var bans))
+            return new();
 
-        return roleBans
-            .Where(ban => ban.Role.StartsWith(prefix, StringComparison.Ordinal))
-            .Select(ban => new ProtoId<T>(ban.Role[prefix.Length..]))
+        return bans
+            .Where(b => b.Role.StartsWith(prefix, StringComparison.Ordinal))
+            .Select(b => new ProtoId<T>(b.Role[prefix.Length..]))
             .ToHashSet();
     }
 
