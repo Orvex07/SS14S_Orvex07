@@ -861,7 +861,7 @@ namespace Content.Client.Lobby.UI
             UpdateSaveButton();
             UpdateMarkings();
             UpdateTtsVoicesControls(); // Sunrise-TTS
-            UpdateBodyTypes();
+            UpdateBodyTypes(); //Sunrise edit
             UpdateHairPickers();
             UpdateCMarkingsHair();
             UpdateCMarkingsFacialHair();
