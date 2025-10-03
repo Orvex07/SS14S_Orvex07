@@ -190,7 +190,7 @@
         name: power-cell-slot-component-slot-name-default
         startingItem: PowerCellSyndicate
   - type: NoSlip
-  
+
 
 - type: entity
   id: PlayerBorgSyndicateReaperBattery
@@ -311,12 +311,12 @@
       map: ["unshaded"]
       shader: unshaded
   - type: Appearance
-  - type: GenericVisualizer
-    visuals:
-      enum.StationAiVisualState.Key:
-        unshaded:
-          Empty: { state: empty }
-          Occupied: { state: full }
+  # - type: GenericVisualizer
+  #   visuals:
+  #     enum.StationAiVisualState.Key:
+  #       unshaded:
+  #         Empty: { state: empty }
+  #         Occupied: { state: full }
   - type: Intellicard
   - type: StaticPrice
     price: 500

@@ -99,7 +99,7 @@
     filterReagentGroups:
      - Medicine
     onlyAffectsMobs: true
-    filterPoison: true
+    # filterPoison: true # schizophrenic.
     doAfterTime: 0.75
     transferAmount: 5
   - type: UseDelay
