@@ -2,7 +2,7 @@ using Content.Shared._Sunrise.Paint;
 
 namespace Content.Client._Sunrise.Paint;
 
-public sealed class PaintSystem : SharedPaintSystem
+public sealed partial class PaintSystem : SharedPaintSystem
 {
     [Dependency] private SharedUserInterfaceSystem _ui = default!;
 
