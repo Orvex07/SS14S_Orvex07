@@ -6,7 +6,7 @@ namespace Content.Shared._Sunrise.Paint;
 
 public sealed class PaintConfigurationSystem : EntitySystem
 {
-    [Dependency] private readonly SharedUserInterfaceSystem _ui = default!;
+    [Dependency] private SharedUserInterfaceSystem _ui = default!;
 
     private const string SettingsIconPath = "/Textures/Interface/VerbIcons/settings.svg.192dpi.png";
 
