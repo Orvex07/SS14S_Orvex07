@@ -4,7 +4,7 @@ using Robust.Shared.Utility;
 
 namespace Content.Shared._Sunrise.Paint;
 
-public sealed class PaintConfigurationSystem : EntitySystem
+public sealed partial class PaintConfigurationSystem : EntitySystem
 {
     [Dependency] private SharedUserInterfaceSystem _ui = default!;
 
